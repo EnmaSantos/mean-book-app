@@ -2,6 +2,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const bookRoutes = require('./routes/bookRoutes'); // Add this line
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Use environment port or 3000
@@ -9,6 +10,7 @@ const PORT = process.env.PORT || 3000; // Use environment port or 3000
 // --- Middleware ---
 // Enable All CORS Requests for development (adjust for production later)
 app.use(cors());
+app.use('/api/books', bookRoutes); // Add this line
 // Parse JSON request bodies
 app.use(express.json());
 
