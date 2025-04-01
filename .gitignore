@@ -1,3 +1,7 @@
-node_modules/
-dist/
-.env
+# mean-book-app/.gitignore
+/backend/node_modules
+/frontend/node_modules
+/frontend/dist
+/frontend/coverage
+*.log
+.env # If you use environment files
