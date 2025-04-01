@@ -1,0 +1,56 @@
+<h2>Edit Book</h2>
+
+<div *ngIf="isLoading">
+  <p>Loading book data...</p>
+</div>
+
+<div *ngIf="errorMessage && !isLoading" style="color: red;">
+  <p>Error: {{ errorMessage }}</p>
+  <p><a routerLink="/">Go back to list</a></p> </div>
+
+<form *ngIf="!isLoading && bookForm" [formGroup]="bookForm" (ngSubmit)="onSubmit()">
+
+  <div>
+    <label for="title">Title:</label>
+    <input id="title" type="text" formControlName="title">
+    <div *ngIf="title?.invalid && (title?.dirty || title?.touched)" style="color: red;">
+      <small *ngIf="title?.errors?.['required']">Title is required.</small>
+      <small *ngIf="title?.errors?.['minlength']">Title must be at least 3 characters long.</small>
+    </div>
+  </div>
+
+  <div>
+    <label for="author">Author:</label>
+    <input id="author" type="text" formControlName="author">
+    <div *ngIf="author?.invalid && (author?.dirty || author?.touched)" style="color: red;">
+      <small *ngIf="author?.errors?.['required']">Author is required.</small>
+    </div>
+  </div>
+
+  <div>
+    <label for="genre">Genre:</label>
+    <input id="genre" type="text" formControlName="genre">
+  </div>
+
+  <div>
+    <label for="publicationYear">Publication Year:</label>
+    <input id="publicationYear" type="number" formControlName="publicationYear">
+    <div *ngIf="publicationYear?.invalid && (publicationYear?.dirty || publicationYear?.touched)" style="color: red;">
+       <small *ngIf="publicationYear?.errors?.['min'] || publicationYear?.errors?.['max']">Please enter a valid year.</small>
+     </div>
+  </div>
+
+  <div>
+    <button type="submit" [disabled]="bookForm.invalid || isSubmitting || isLoading">
+      {{ isSubmitting ? 'Saving...' : 'Save Changes' }}
+    </button>
+  </div>
+
+   <div *ngIf="errorMessage && !isLoading" style="color: red; margin-top: 10px;">
+     </div>
+
+</form>
+
+<div *ngIf="!isLoading && bookForm">
+  <a routerLink="/">Cancel</a>
+</div>

@@ -8,11 +8,15 @@ const app = express();
 const PORT = process.env.PORT || 3000; // Use environment port or 3000
 
 // --- Middleware ---
+// --- Middleware ---
 // Enable All CORS Requests for development (adjust for production later)
 app.use(cors());
-app.use('/api/books', bookRoutes); // Add this line
-// Parse JSON request bodies
+// Parse JSON request bodies *BEFORE* routes that need it
 app.use(express.json());
+
+// --- API Routes ---
+// Now mount the routes *AFTER* the body-parsing middleware
+app.use('/api/books', bookRoutes);
 
 // --- MongoDB Connection ---
 // Replace with your actual MongoDB connection string!
