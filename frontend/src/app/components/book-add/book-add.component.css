@@ -1,0 +1,20 @@
+/* src/app/components/book-add/book-add.component.css */
+.book-form {
+  display: flex; /* Enable Flexbox */
+  flex-direction: column; /* Stack children vertically */
+  gap: 10px; /* Add some space between form fields */
+  max-width: 500px; /* Optional: Limit form width */
+  margin: 1em auto; /* Optional: Center form with margin */
+}
+
+/* Ensure Material form fields take available width */
+.book-form mat-form-field {
+  width: 100%;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px; /* Space between buttons */
+  margin-top: 1em;
+  justify-content: flex-start; /* Align buttons to the start */
+}

@@ -157,11 +157,15 @@ export class BookListComponent implements OnInit {
     // Update component state based on paginator event
     this.currentPageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
-    // Reload data for the new page/size, keeping current filters/sort
+
+    // *** Check these lines carefully ***
     const searchTerm = this.searchControl.value ?? '';
     const genre = this.genreFilterControl.value ?? '';
-    const sortBy = this.sort?.active ?? '';
-    const sortOrder = this.sort?.direction ?? '';
+    const sortBy = this.sort?.active ?? ''; // Reads current sort field
+    const sortOrder = this.sort?.direction ?? ''; // Reads current sort direction
+    // *** ------------------------- ***
+
+    // Pass ALL current state parameters to loadBooks
     this.loadBooks(searchTerm, genre, sortBy, sortOrder, this.currentPageIndex, this.pageSize);
   }
 

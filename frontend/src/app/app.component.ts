@@ -2,15 +2,19 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { BookListComponent } from './components/book-list/book-list.component'; // <-- Import
+import { MatToolbarModule } from '@angular/material/toolbar'; // <-- Import Toolbar Module
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, BookListComponent], // <-- Add here
+  imports: [
+    CommonModule,
+    RouterOutlet, // Keep RouterOutlet
+    MatToolbarModule // <-- Add Toolbar Module here
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'frontend';
+  title = 'MEAN Book App'; // Use this title property
 }

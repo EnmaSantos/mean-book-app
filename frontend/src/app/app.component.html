@@ -1,3 +1,9 @@
-<h1>MEAN Book App</h1>
 
-<router-outlet></router-outlet> 
+
+<mat-toolbar color="primary">
+  <span>{{ title }}</span>
+</mat-toolbar>
+
+<div class="main-content" style="padding: 20px;">
+  <router-outlet></router-outlet>
+</div>

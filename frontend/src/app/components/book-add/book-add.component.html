@@ -27,32 +27,33 @@
   <mat-form-field appearance="outline">
     <mat-label>Publication Year</mat-label>
     <input matInput id="publicationYear" type="number" formControlName="publicationYear">
-     <mat-error *ngIf="publicationYear?.invalid && (publicationYear?.dirty || publicationYear?.touched)">
-       <span *ngIf="publicationYear?.errors?.['min'] || publicationYear?.errors?.['max']">Please enter a valid year.</span>
-     </mat-error>
+    <mat-error *ngIf="publicationYear?.invalid && (publicationYear?.dirty || publicationYear?.touched)">
+      <span *ngIf="publicationYear?.errors?.['min'] || publicationYear?.errors?.['max']">Please enter a valid year.</span>
+    </mat-error>
   </mat-form-field>
 
   <mat-form-field appearance="outline">
     <mat-label>Rating (1-5)</mat-label>
     <input matInput id="rating" type="number" formControlName="rating" min="1" max="5">
-     <mat-error *ngIf="rating?.invalid && (rating?.dirty || rating?.touched)">
-       <span *ngIf="rating?.errors?.['min'] || rating?.errors?.['max']">Rating must be between 1 and 5.</span>
-     </mat-error>
-
-     <mat-form-field appearance="outline">
-      <mat-label>Cover Image URL</mat-label>
-      <input matInput id="coverImageUrl" type="url" formControlName="coverImageUrl" placeholder="https://example.com/image.jpg">
-       </mat-form-field> 
+    <mat-error *ngIf="rating?.invalid && (rating?.dirty || rating?.touched)">
+      <span *ngIf="rating?.errors?.['min'] || rating?.errors?.['max']">Rating must be between 1 and 5.</span>
+    </mat-error>
   </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Cover Image URL</mat-label>
+    <input matInput id="coverImageUrl" type="url" formControlName="coverImageUrl" placeholder="https://example.com/image.jpg">
+  </mat-form-field>
+  
   <div class="form-actions">
     <button mat-raised-button color="primary" type="submit" [disabled]="bookForm.invalid || isSubmitting">
       {{ isSubmitting ? 'Adding...' : 'Add Book' }}
     </button>
-     <a mat-stroked-button routerLink="/">Cancel</a>
+    <a mat-stroked-button routerLink="/">Cancel</a>
   </div>
 
-   <div *ngIf="errorMessage" class="error-message" style="color: darkred; margin-top: 10px;">
-     <p>Error: {{ errorMessage }}</p>
-   </div>
+  <div *ngIf="errorMessage" class="error-message" style="color: darkred; margin-top: 10px;">
+    <p>Error: {{ errorMessage }}</p>
+  </div>
 
 </form>
