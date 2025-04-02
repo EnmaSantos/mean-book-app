@@ -17,12 +17,45 @@ router.post('/', async (req, res) => {
   }
 });
 
-// READ all Books (GET /api/books)
+// READ all Books (GET /api/books) - MODIFIED FOR SEARCH & FILTER
 router.get('/', async (req, res) => {
   try {
-    const books = await Book.find(); // Fetch all books from MongoDB
-    res.status(200).json(books); // Respond with the list of books
+    let query = {}; // Start with an empty query object
+
+    // --- Handle Search Term ---
+    if (req.query.search && typeof req.query.search === 'string' && req.query.search.trim() !== '') {
+      const searchTerm = req.query.search.trim();
+      const regex = new RegExp(searchTerm, 'i');
+      query.$or = [ // Use $or for searching multiple fields
+        { title: { $regex: regex } },
+        { author: { $regex: regex } },
+        { description: { $regex: regex } },
+        { genre: { $regex: regex } }
+      ];
+      console.log(`Searching books. Current query:`, JSON.stringify(query));
+    }
+
+    // --- Handle Genre Filter ---
+    if (req.query.genre && typeof req.query.genre === 'string' && req.query.genre.trim() !== '') {
+      const genreFilter = req.query.genre.trim();
+      // Add genre directly to the query object. If 'query' already has other keys
+      // (like $or from search), MongoDB implicitly ANDs them together.
+      query.genre = genreFilter;
+      // Note: This does an exact, case-sensitive match for the genre.
+      // For case-insensitive, you might use:
+      // query.genre = { $regex: new RegExp(`^${genreFilter}$`, 'i') };
+      console.log(`Filtering by genre: "${genreFilter}". Current query:`, JSON.stringify(query));
+    }
+
+    // --- Log final query ---
+    console.log('Executing Book.find with query:', JSON.stringify(query));
+
+    // Execute the find query (combines search and filter if both present)
+    const books = await Book.find(query);
+    res.status(200).json(books);
+
   } catch (error) {
+    console.error('Error fetching books:', error);
     res.status(500).json({ message: 'Error fetching books', error: error.message });
   }
 });
@@ -71,7 +104,6 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ message: 'Error deleting book', error: error.message });
   }
 });
-
 
 // Export the router so it can be used in server.js
 module.exports = router;

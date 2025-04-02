@@ -28,20 +28,27 @@ export class BookService {
   // Inject HttpClient in the constructor
   constructor(private http: HttpClient) { }
 
-    // Method to GET all books - MODIFIED FOR SEARCH TERM
-  getBooks(searchTerm?: string): Observable<Book[]> {
-      let params = new HttpParams(); // Initialize HttpParams
-  
-      // If a search term is provided and not empty, add it to the params
-      if (searchTerm && searchTerm.trim() !== '') {
-        params = params.set('search', searchTerm.trim()); // Key is 'search', matching req.query.search in backend
-      }
-  
-      // Make the GET request, including the params object
-      // The params object will automatically append '?search=term' if needed
-      return this.http.get<Book[]>(this.apiUrl, { params: params });
+  // Method to GET books - MODIFIED FOR SEARCH & GENRE FILTER
+  // Add optional genre parameter
+  getBooks(searchTerm?: string, genre?: string): Observable<Book[]> {
+    let params = new HttpParams(); // Initialize HttpParams
+
+    // Add search term if provided
+    if (searchTerm && searchTerm.trim() !== '') {
+      params = params.set('search', searchTerm.trim());
     }
-  
+
+    // --- ADD GENRE FILTER PARAM ---
+    // Add genre if provided and not empty/null
+    if (genre && genre.trim() !== '') {
+       params = params.set('genre', genre.trim()); // Key is 'genre', matching req.query.genre
+    }
+    // -----------------------------
+
+    // Make the GET request, including the params object
+    console.log('Sending getBooks request with params:', params.toString()); // Log the params being sent
+    return this.http.get<Book[]>(this.apiUrl, { params: params });
+  }
 
   // Method to GET a single book by ID
   getBook(id: string): Observable<Book> {
