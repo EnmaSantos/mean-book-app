@@ -5,3 +5,4 @@
 /frontend/coverage
 *.log
 .env # If you use environment files
+app walktrough.mp4
