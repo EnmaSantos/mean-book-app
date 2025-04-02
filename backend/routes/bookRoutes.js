@@ -17,42 +17,62 @@ router.post('/', async (req, res) => {
   }
 });
 
-// READ all Books (GET /api/books) - MODIFIED FOR SEARCH & FILTER
+// READ all Books (GET /api/books) - MODIFIED FOR SEARCH, FILTER, SORT & PAGINATION
 router.get('/', async (req, res) => {
   try {
-    let query = {}; // Start with an empty query object
+    // --- Pagination Parameters ---
+    // Use '+' to convert query params to numbers, provide defaults
+    const pageIndex = req.query.pageIndex ? +req.query.pageIndex : 0; // 0-based index
+    const pageSize = req.query.pageSize ? +req.query.pageSize : 10; // Default page size
+    console.log(`Pagination: pageIndex=${pageIndex}, pageSize=${pageSize}`);
 
-    // --- Handle Search Term ---
+    // --- Build Filter/Search Query (as before) ---
+    let query = {};
     if (req.query.search && typeof req.query.search === 'string' && req.query.search.trim() !== '') {
       const searchTerm = req.query.search.trim();
       const regex = new RegExp(searchTerm, 'i');
-      query.$or = [ // Use $or for searching multiple fields
-        { title: { $regex: regex } },
-        { author: { $regex: regex } },
-        { description: { $regex: regex } },
-        { genre: { $regex: regex } }
-      ];
+      query.$or = [ { title: { $regex: regex } }, { author: { $regex: regex } } ];
       console.log(`Searching books. Current query:`, JSON.stringify(query));
     }
-
-    // --- Handle Genre Filter ---
+    
     if (req.query.genre && typeof req.query.genre === 'string' && req.query.genre.trim() !== '') {
       const genreFilter = req.query.genre.trim();
-      // Add genre directly to the query object. If 'query' already has other keys
-      // (like $or from search), MongoDB implicitly ANDs them together.
       query.genre = genreFilter;
-      // Note: This does an exact, case-sensitive match for the genre.
-      // For case-insensitive, you might use:
-      // query.genre = { $regex: new RegExp(`^${genreFilter}$`, 'i') };
       console.log(`Filtering by genre: "${genreFilter}". Current query:`, JSON.stringify(query));
     }
+    
+    console.log('Filter/Search Query:', JSON.stringify(query));
 
-    // --- Log final query ---
-    console.log('Executing Book.find with query:', JSON.stringify(query));
+    // --- Build Sort Options (as before) ---
+    let sortOptions = { createdAt: -1 }; // Default sort
+    if (req.query.sortBy && typeof req.query.sortBy === 'string') {
+      const sortBy = req.query.sortBy;
+      const sortOrder = (req.query.sortOrder === 'desc' ? -1 : 1);
+      sortOptions = { [sortBy]: sortOrder };
+      console.log(`Sorting by: ${sortBy}, Order: ${sortOrder === -1 ? 'desc' : 'asc'}`);
+    } else {
+      console.log('Applying default sort (newest first)');
+    }
+    
+    console.log('Sort Options:', JSON.stringify(sortOptions));
 
-    // Execute the find query (combines search and filter if both present)
-    const books = await Book.find(query);
-    res.status(200).json(books);
+    // --- Execute Queries ---
+    // 1. Get TOTAL COUNT matching the query (before pagination)
+    const totalCount = await Book.countDocuments(query);
+    console.log(`Total matching documents: ${totalCount}`);
+
+    // 2. Get the BOOKS for the CURRENT PAGE matching the query
+    const books = await Book.find(query)
+                            .sort(sortOptions)
+                            .skip(pageIndex * pageSize) // Skip documents for previous pages
+                            .limit(pageSize);          // Limit results to page size
+
+    // --- Send Response ---
+    // Respond with an object containing books for the page and the total count
+    res.status(200).json({
+      books: books,         // Array of books for the current page
+      totalCount: totalCount // Total number of books matching query
+    });
 
   } catch (error) {
     console.error('Error fetching books:', error);
