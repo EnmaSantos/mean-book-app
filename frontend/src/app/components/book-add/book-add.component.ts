@@ -5,12 +5,21 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms'; // Ensure ReactiveFormsModule is imported here
 import { Router } from '@angular/router'; // Import Router for navigation
 import { BookService } from '../../services/book.service'; // Import BookService
-
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button'; // For the submit button
+import { RouterLink } from '@angular/router'; // For the cancel link
 @Component({
   selector: 'app-book-add',
   standalone: true,
-  // Import CommonModule and ReactiveFormsModule for standalone components
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ // <-- CHECK THIS ARRAY
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink, // If using cancel link
+    MatFormFieldModule, // <--- MAKE SURE THIS IS HERE
+    MatInputModule,
+    MatButtonModule
+  ],
   templateUrl: './book-add.component.html',
   styleUrls: ['./book-add.component.css']
 })
@@ -32,7 +41,9 @@ export class BookAddComponent implements OnInit {
       title: ['', [Validators.required, Validators.minLength(3)]], // Title is required, min 3 chars
       author: ['', Validators.required], // Author is required
       genre: [''], // Optional
-      publicationYear: [null, [Validators.min(0), Validators.max(new Date().getFullYear())]] // Optional, numeric, sensible range
+      publicationYear: [null, [Validators.min(0), Validators.max(new Date().getFullYear())]], // Optional, numeric, sensible range
+      rating: [null, [Validators.min(1), Validators.max(5)]], // Optional, numeric, 1-5 range
+      coverImageUrl: [''] // Optional, for future use
     });
   }
 
@@ -40,6 +51,9 @@ export class BookAddComponent implements OnInit {
   get title() { return this.bookForm.get('title'); }
   get author() { return this.bookForm.get('author'); }
   get publicationYear() { return this.bookForm.get('publicationYear'); }
+  get rating() { return this.bookForm.get('rating'); }
+  get coverImageUrl() { return this.bookForm.get('coverImageUrl'); }
+  get genre() { return this.bookForm.get('genre'); }
 
 
   onSubmit(): void {
@@ -56,7 +70,8 @@ export class BookAddComponent implements OnInit {
     const formData = this.bookForm.value;
     const bookData = {
       ...formData,
-      publicationYear: formData.publicationYear ? Number(formData.publicationYear) : undefined
+      publicationYear: formData.publicationYear ? Number(formData.publicationYear) : undefined,
+      rating: formData.rating ? Number(formData.rating) : undefined // Handle rating too
     };
 
 

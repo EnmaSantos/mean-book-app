@@ -4,11 +4,14 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router'; // Import ActivatedRoute and RouterLink
 import { BookService, Book } from '../../services/book.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-book-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink], // Add RouterLink for Cancel button
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, MatFormFieldModule, MatInputModule, MatButtonModule], // Add RouterLink for Cancel button
   templateUrl: './book-edit.component.html',
   styleUrls: ['./book-edit.component.css']
 })
@@ -32,7 +35,9 @@ export class BookEditComponent implements OnInit {
       title: ['', [Validators.required, Validators.minLength(3)]],
       author: ['', Validators.required],
       genre: [''],
-      publicationYear: [null, [Validators.min(0), Validators.max(new Date().getFullYear())]]
+      publicationYear: [null, [Validators.min(0), Validators.max(new Date().getFullYear())]],
+      rating: [null, [Validators.min(1), Validators.max(5)]],
+      coverImageUrl: [''] // Optional, for future use
     });
 
     // Get the book ID from the route parameters
@@ -90,6 +95,10 @@ export class BookEditComponent implements OnInit {
   get title() { return this.bookForm.get('title'); }
   get author() { return this.bookForm.get('author'); }
   get publicationYear() { return this.bookForm.get('publicationYear'); }
+  get rating() { return this.bookForm.get('rating'); }
+  get coverImageUrl() { return this.bookForm.get('coverImageUrl'); }
+  get genre() { return this.bookForm.get('genre'); }
+
 
 
   onSubmit(): void {

@@ -39,7 +39,10 @@
        <small *ngIf="publicationYear?.errors?.['min'] || publicationYear?.errors?.['max']">Please enter a valid year.</small>
      </div>
   </div>
-
+  <mat-form-field appearance="outline">
+    <mat-label>Cover Image URL</mat-label>
+    <input matInput id="coverImageUrl" type="url" formControlName="coverImageUrl" placeholder="https://example.com/image.jpg">
+     </mat-form-field>
   <div>
     <button type="submit" [disabled]="bookForm.invalid || isSubmitting || isLoading">
       {{ isSubmitting ? 'Saving...' : 'Save Changes' }}

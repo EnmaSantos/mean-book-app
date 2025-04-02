@@ -31,7 +31,8 @@ export class BookListComponent implements OnInit {
   errorMessage = '';
 
   // Define columns to display in the table
-  displayedColumns: string[] = ['title', 'author', 'genre', 'publicationYear', 'actions'];
+  displayedColumns: string[] = ['coverImageUrl','title', 'author', 'genre', 'publicationYear', 'rating', 'actions'];
+  // Note: 'actions' is for edit/delete buttons, 'coverImageUrl' is for displaying the image
 
   constructor(private bookService: BookService) { }
 
